@@ -2,9 +2,9 @@
 
 /**
  * Plugin Name: My Simple Space
- * Version: 1.0.2
+ * Version: 1.0.3
  * Plugin URI: http://mannwd.com/wordpress/my-simple-features/
- * Description: Simple method of creating and displaying simple site features.
+ * Description: Show the diskspace and memory usage of your site.
  * Author: Michael Mann
  * Author URI: http://mannwd.com
  * License: GPL v2
@@ -39,22 +39,21 @@ class SimpleSpace {
 			define( 'MY_SIMPLE_SPACE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 		// Hook into the 'wp_dashboard_setup' action to register our other functions
-		add_action( 'wp_dashboard_setup', array( &$this, 'my_simple_space_widget' ) );
-		add_filter( 'admin_footer_text', array( &$this, 'my_simple_space_footer' ) );
-		add_action( 'admin_enqueue_scripts', array( &$this, 'my_simple_space_admin_css' ) );
+		add_action( 'wp_dashboard_setup', array( $this, 'my_simple_space_widget' ) );
+		add_filter( 'admin_footer_text', array( $this, 'my_simple_space_footer' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'my_simple_space_admin_css' ) );
 
 	}
 
+	// Dashboard Widget
 	function my_simple_space_widget() {
 
-//	global $wp_meta_boxes;
-
-	wp_add_dashboard_widget( 'simple_space_widget', '<span class="dashicons dashicons-chart-pie"></span> Memory/Space Overview', 'my_simple_space' );
+	add_meta_box('simple_space_widget', '<span class="dashicons dashicons-chart-pie"></span> Memory/Space Overview', 'my_simple_space', 'dashboard', 'side', 'high');
 
 	}
 
 	public function my_simple_space_admin_css() {
-		wp_register_style( 'simple_space_admin', MY_SIMPLE_SPACE_PLUGIN_URL . 'space.css', false, '1.0.0' );
+		wp_register_style( 'simple_space_admin', MY_SIMPLE_SPACE_PLUGIN_URL . 'space.css', false, '1.0.3' );
         wp_enqueue_style( 'simple_space_admin' );
 	}
 
@@ -79,7 +78,7 @@ function my_simple_get_memory() {
 	$memory['memory_limit'] = ini_get( 'memory_limit' );
 	$memory['memory_usage'] = function_exists( 'memory_get_usage' ) ? round( memory_get_usage(), 2 ) : 0;
 
-	Return $memory;
+	return $memory;
 
 }
 

@@ -7,7 +7,7 @@ Stable tag: 4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Diskspace Disk Space, Database and Memory Usage in the dashboard.
+Disk Space, Database and Memory Usage in the dashboard.
 
 == Description ==
 
@@ -23,7 +23,7 @@ Display the total size space usage as well:
 
 == Installation ==
 
-Simply downloadThis section describes how to install the plugin and get it working.
+Simply download, install and activate. Then a widget with information will be added to your dashboard and memory information in the footer of every admin page.
 
 e.g.
 
@@ -38,13 +38,12 @@ The plugin cycles through the provided path to calculate the total space used fo
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets 
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png` 
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+1. The dashboard widget
 
 == Changelog ==
+
+= 1.0.3 =
+* General housekeeping to clean up plugin files, including plugin information.
 
 = 1.0.2 =
 * Removed hard coded paths and replaced with dynamic paths.
@@ -57,5 +56,5 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 == Upgrade Notice ==
 
-= 1.0.1 =
-Repair database table size routine to make use of $wpdb, as it was not working on some sites.
+= 1.0.2 =
+*Hard coded paths were removed and instead setup to pull based on your WordPress installation.
