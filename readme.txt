@@ -3,7 +3,7 @@ Contributors: mannweb
 Tags: disk space, database size
 Requires at least: 3.5.0
 Tested up to: 4.3
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,9 @@ The plugin cycles through the provided path to calculate the total space used fo
 1. The dashboard widget
 
 == Changelog ==
+
+= 1.0.4 =
+* Found issue with closing columns on the widget. This was an HTML code issue, not closing the div tag, which caused other widgets below to be absorbed into the same widget box.
 
 = 1.0.3 =
 * General housekeeping to clean up plugin files, including plugin information.
