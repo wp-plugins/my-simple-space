@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name: My Simple Space
- * Version: 1.0.3
+ * Version: 1.0.4
  * Plugin URI: http://mannwd.com/wordpress/my-simple-features/
  * Description: Show the diskspace and memory usage of your site.
  * Author: Michael Mann
@@ -47,9 +47,7 @@ class SimpleSpace {
 
 	// Dashboard Widget
 	function my_simple_space_widget() {
-
-	add_meta_box('simple_space_widget', '<span class="dashicons dashicons-chart-pie"></span> My Simple Space', 'my_simple_space', 'dashboard', 'side', 'high');
-
+	add_meta_box( 'simple_space_widget', '<span class="dashicons dashicons-chart-pie"></span> My Simple Space', 'my_simple_space', 'dashboard', 'side', 'high' );
 	}
 
 	public function my_simple_space_admin_css() {
@@ -164,6 +162,8 @@ function my_simple_space() {
 		echo '<span class="spacedark">' . $name . '</span>: ' . format_size( foldersize( $value ) ) . '<br />';
 
 	}
+
+	echo '</div>';
 
 }
 
