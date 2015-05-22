@@ -2,9 +2,9 @@
 
 /**
  * Plugin Name: My Simple Space
- * Version: 1.0.2
+ * Version: 1.0.3
  * Plugin URI: http://mannwd.com/wordpress/my-simple-features/
- * Description: Simple method of creating and displaying simple site features.
+ * Description: Show the diskspace and memory usage of your site.
  * Author: Michael Mann
  * Author URI: http://mannwd.com
  * License: GPL v2
@@ -39,22 +39,21 @@ class SimpleSpace {
 			define( 'MY_SIMPLE_SPACE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
 		// Hook into the 'wp_dashboard_setup' action to register our other functions
-		add_action( 'wp_dashboard_setup', array( &$this, 'my_simple_space_widget' ) );
-		add_filter( 'admin_footer_text', array( &$this, 'my_simple_space_footer' ) );
-		add_action( 'admin_enqueue_scripts', array( &$this, 'my_simple_space_admin_css' ) );
+		add_action( 'wp_dashboard_setup', array( $this, 'my_simple_space_widget' ) );
+		add_filter( 'admin_footer_text', array( $this, 'my_simple_space_footer' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'my_simple_space_admin_css' ) );
 
 	}
 
+	// Dashboard Widget
 	function my_simple_space_widget() {
 
-//	global $wp_meta_boxes;
-
-	wp_add_dashboard_widget( 'simple_space_widget', '<span class="dashicons dashicons-chart-pie"></span> Memory/Space Overview', 'my_simple_space' );
+	add_meta_box('simple_space_widget', '<span class="dashicons dashicons-chart-pie"></span> My Simple Space', 'my_simple_space', 'dashboard', 'side', 'high');
 
 	}
 
 	public function my_simple_space_admin_css() {
-		wp_register_style( 'simple_space_admin', MY_SIMPLE_SPACE_PLUGIN_URL . 'space.css', false, '1.0.0' );
+		wp_register_style( 'simple_space_admin', MY_SIMPLE_SPACE_PLUGIN_URL . 'space.css', false, '1.0.3' );
         wp_enqueue_style( 'simple_space_admin' );
 	}
 
@@ -79,7 +78,7 @@ function my_simple_get_memory() {
 	$memory['memory_limit'] = ini_get( 'memory_limit' );
 	$memory['memory_usage'] = function_exists( 'memory_get_usage' ) ? round( memory_get_usage(), 2 ) : 0;
 
-	Return $memory;
+	return $memory;
 
 }
 
@@ -113,29 +112,58 @@ function my_simple_space() {
    }
 }
 
-	echo '<p>'.__( 'PHP Version: ', 'simple_space' ) . $phpversion . ' '. ( PHP_INT_SIZE * 8 ) . __(' Bit OS', 'simple_space') .'</p>';
+	$topitems = array (
+		'PHP Version' => $phpversion . ' '. ( PHP_INT_SIZE * 8 ) . __(' Bit OS', 'simple_space'),
+		'Memory' => 'Total: ' . $memory_limit . ' Used: ' . format_size( $memory_usage ),
+		'Database' => format_size( $dbsize ),
+		'Entire Site' => format_size( foldersize( get_home_path() ) )
+	);
 
-	echo '<div class="halfspace">Entire Site: ' . format_size( foldersize( get_home_path() ) ) . '</div>';
-	echo '<div class="halfspace">Database: ' . format_size( $dbsize ) . '</div>';
-	echo '<div class="halfspace"><p class="spacedark">Memory</p>';
-	echo '<p>Total: ' . $memory_limit . ' Used: ' . format_size( $memory_usage ) . '</p>
-</div>';
+	foreach ($topitems as $name => $value) {
+
+		echo '<p class="halfspace"><span class="spacedark">' . $name . '</span>: ' . $value . '</p>';
+	}
 
 	echo '<div class="halfspace">
-<p><b>Files</b></p>';
+<p><span class="spacedark">Contents</span></p>';
 
 	$content = parse_url( content_url() );
 	$content = get_home_path() . $content['path'];
 	$plugins = str_replace( plugin_basename( __FILE__ ), '', __FILE__ );
-	$themes = get_theme_root();
-	$basedir = $uploads['basedir'];
 
-    echo 'wp-content directory: ' . format_size( foldersize( $content ) ) . '<br />';
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;plugins directory: ' . format_size( foldersize( $plugins ) ) . '<br />';
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;themes directory: ' . format_size( foldersize( $themes ) ) . '<br />';
-    echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uploads directory: ' . format_size( foldersize( $basedir ) ) . '<br />';
+	$contents = array(
+		"wp-content" => $content,
+		"&nbsp;&nbsp;&nbsp;plugins" => $plugins,
+		"&nbsp;&nbsp;&nbsp;themes" => get_theme_root(),
+		"&nbsp;&nbsp;&nbsp;uploads" => $uploads['basedir'],
+	);
+
+	foreach ($contents as $name => $value) {
+
+		echo '<span class="spacedark">' . $name . '</span>: ' . format_size( foldersize( $value ) ) . '<br />';
+
+	}
 
 	echo '</div>';
+
+	$wpadmin = parse_url ( get_admin_url() );
+	$wpadmin = get_home_path() . ltrim( $wpadmin['path'], '/' );
+	$wpincludes = parse_url ( includes_url() );
+	$wpincludes = get_home_path() . ltrim( $wpincludes['path'], '/' );
+
+	echo '<div class="halfspace">
+<p><b>Other WP Folders</b></p>';
+
+	$folders = array(
+		"wp-admin" => $wpadmin,
+		"wp-includes" => $wpincludes
+	);
+
+	foreach ($folders as $name => $value) {
+
+		echo '<span class="spacedark">' . $name . '</span>: ' . format_size( foldersize( $value ) ) . '<br />';
+
+	}
 
 }
 
