@@ -112,8 +112,6 @@ function my_simple_space() {
 
 	}
 
-	echo $home;
-
 	// Upload Directory
 	$uploads = wp_upload_dir();
 
