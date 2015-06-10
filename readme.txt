@@ -3,7 +3,7 @@ Contributors: mannweb
 Tags: disk space, database size
 Requires at least: 3.5.0
 Tested up to: 4.3
-Stable tag: 1.0.4
+Stable tag: 1.0.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -42,6 +42,12 @@ The plugin cycles through the provided path to calculate the total space used fo
 
 == Changelog ==
 
+= 1.0.6 =
+* 1.0.5 update killed data for sites not using WordPress in a subfolder. This is now fixed.
+
+= 1.0.5 =
+* Corrected double folder for sites using WordPress in a subfolder.
+
 = 1.0.4 =
 * Found issue with closing columns on the widget. This was an HTML code issue, not closing the div tag, which caused other widgets below to be absorbed into the same widget box.
 
@@ -60,5 +66,8 @@ The plugin cycles through the provided path to calculate the total space used fo
 
 == Upgrade Notice ==
 
+= 1.0.5 =
+* Changed the way plugin works with get_home_path. If site is in a subfolder, subfolder is stripped to avoid double entry, resulting in error messages.
+
 = 1.0.2 =
-*Hard coded paths were removed and instead setup to pull based on your WordPress installation.
+* Hard coded paths were removed and instead setup to pull based on your WordPress installation.
