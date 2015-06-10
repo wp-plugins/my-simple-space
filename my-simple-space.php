@@ -93,7 +93,7 @@ function my_simple_space() {
 	$memory_usage = $memory['memory_usage'];
 
 	// Determines if site is using a subfolder, such as /wp
-	if ( strlen( get_site_url() ) > strrpos( get_site_url(), '/' ) ) {
+	if ( strlen( get_site_url() ) > strrpos( get_site_url(), '\/' ) ) {
 		$remove = substr( get_site_url(), strrpos( get_site_url(), '/' ), strlen( get_site_url() ) );
 		$home = str_replace ( $remove, '', get_home_path() ); // Strips out subfolder to avoid duplicate folder in path
 	} else {
