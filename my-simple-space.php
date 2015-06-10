@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name: My Simple Space
- * Version: 1.0.5
+ * Version: 1.0.6
  * Plugin URI: http://mannwd.com/wordpress/my-simple-features/
  * Description: Show the diskspace and memory usage of your site.
  * Author: Michael Mann
