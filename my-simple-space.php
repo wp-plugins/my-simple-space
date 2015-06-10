@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name: My Simple Space
- * Version: 1.0.4
+ * Version: 1.0.5
  * Plugin URI: http://mannwd.com/wordpress/my-simple-features/
  * Description: Show the diskspace and memory usage of your site.
  * Author: Michael Mann
@@ -92,7 +92,14 @@ function my_simple_space() {
 	$memory_limit = $memory['memory_limit'];
 	$memory_usage = $memory['memory_usage'];
 
-	$site = get_home_path();
+	// Determines if site is using a subfolder, such as /wp
+	if ( strlen( get_site_url() ) > strrpos( get_site_url(), '/' ) ) {
+		$remove = substr( get_site_url(), strrpos( get_site_url(), '/' ), strlen( get_site_url() ) );
+		$home = str_replace ( $remove, '', get_home_path() ); // Strips out subfolder to avoid duplicate folder in path
+	} else {
+		$home = get_home_path(); // Not in subfolder
+	}
+
 	$uploads = wp_upload_dir();
 
 	if ( !empty( $memory_usage ) && !empty( $memory_limit ) ) {
@@ -110,6 +117,7 @@ function my_simple_space() {
    }
 }
 
+	// PHP version, memory, database size and entire site usage (may include not WP items)
 	$topitems = array (
 		'PHP Version' => $phpversion . ' '. ( PHP_INT_SIZE * 8 ) . __(' Bit OS', 'simple_space'),
 		'Memory' => 'Total: ' . $memory_limit . ' Used: ' . format_size( $memory_usage ),
@@ -126,9 +134,10 @@ function my_simple_space() {
 <p><span class="spacedark">Contents</span></p>';
 
 	$content = parse_url( content_url() );
-	$content = get_home_path() . $content['path'];
+	$content = $home . $content['path'];
 	$plugins = str_replace( plugin_basename( __FILE__ ), '', __FILE__ );
 
+	// WP Content and selected subfolders
 	$contents = array(
 		"wp-content" => $content,
 		"&nbsp;&nbsp;&nbsp;plugins" => $plugins,
@@ -145,13 +154,14 @@ function my_simple_space() {
 	echo '</div>';
 
 	$wpadmin = parse_url ( get_admin_url() );
-	$wpadmin = get_home_path() . ltrim( $wpadmin['path'], '/' );
+	$wpadmin = $home . ltrim( $wpadmin['path'], '/' );
 	$wpincludes = parse_url ( includes_url() );
-	$wpincludes = get_home_path() . ltrim( $wpincludes['path'], '/' );
+	$wpincludes = $home . ltrim( $wpincludes['path'], '/' );
 
 	echo '<div class="halfspace">
 <p><b>Other WP Folders</b></p>';
 
+	// wp-admin and wp-includes folders
 	$folders = array(
 		"wp-admin" => $wpadmin,
 		"wp-includes" => $wpincludes
@@ -167,6 +177,7 @@ function my_simple_space() {
 
 }
 
+// Get Folder size function
 function foldersize( $path ) {
     $total_size = 0;
     $files = scandir( $path );
@@ -189,6 +200,7 @@ function foldersize( $path ) {
     return $total_size;
 }
 
+// Formatting the size function
 function format_size( $size ) {
     global $units;
 
