@@ -3,7 +3,7 @@ Contributors: mannweb
 Tags: disk space, database size
 Requires at least: 3.5.0
 Tested up to: 4.3
-Stable tag: 1.0.6
+Stable tag: 1.0.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,9 @@ The plugin cycles through the provided path to calculate the total space used fo
 1. The dashboard widget
 
 == Changelog ==
+
+= 1.0.7 =
+* Fix for sites that return the home_path as /. Gets the absolute path using ABSPATH instead.
 
 = 1.0.6 =
 * 1.0.5 update killed data for sites not using WordPress in a subfolder. This is now fixed.

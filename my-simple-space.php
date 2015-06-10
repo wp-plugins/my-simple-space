@@ -2,7 +2,7 @@
 
 /**
  * Plugin Name: My Simple Space
- * Version: 1.0.6
+ * Version: 1.0.7
  * Plugin URI: http://mannwd.com/wordpress/my-simple-features/
  * Description: Show the diskspace and memory usage of your site.
  * Author: Michael Mann
@@ -86,47 +86,63 @@ function my_simple_space() {
 	global $wpdb;
 	$dbname = $wpdb->dbname;
 
+	// Setup Home Path for Later Usage
+	if ( get_home_path() === "/" )
+		$homepath = ABSPATH;
+	else
+		$homepath = get_home_path();
+
 	$phpversion = PHP_VERSION;
 
 	$memory = my_simple_get_memory();
 	$memory_limit = $memory['memory_limit'];
 	$memory_usage = $memory['memory_usage'];
 
+	$subfolder = strrpos( get_site_url(), '/', 8 ); // Starts after http:// or https:// to find the last slash
+
 	// Determines if site is using a subfolder, such as /wp
-	if ( strlen( get_site_url() ) > strrpos( get_site_url(), '\/' ) ) {
+	if ( isset( $subfolder ) && $subfolder != "" ) {
+
 		$remove = substr( get_site_url(), strrpos( get_site_url(), '/' ), strlen( get_site_url() ) );
-		$home = str_replace ( $remove, '', get_home_path() ); // Strips out subfolder to avoid duplicate folder in path
+		$home = str_replace ( $remove, '', $homepath ); // Strips out subfolder to avoid duplicate folder in path
+
 	} else {
-		$home = get_home_path(); // Not in subfolder
+
+		$home = $homepath;
+
 	}
 
+	echo $home;
+
+	// Upload Directory
 	$uploads = wp_upload_dir();
 
+	// Get Memory
 	if ( !empty( $memory_usage ) && !empty( $memory_limit ) ) {
 		$memory_percent = round ( $memory_usage / $memory_limit * 100, 0 );
 	}
 
+	// Get Database Size
 	$result = $wpdb->get_results( 'SHOW TABLE STATUS', ARRAY_A );
 	$rows = count( $result );
 
 	$dbsize = 0;
 
- if ( $wpdb->num_rows > 0 ) {
-  foreach ( $result as $row ) {
-		$dbsize += $row["Data_length"] + $row["Index_length"];
-   }
-}
+	if ( $wpdb->num_rows > 0 ) {
+		foreach ( $result as $row ) {
+			$dbsize += $row["Data_length"] + $row["Index_length"];
+		}
+	}
 
 	// PHP version, memory, database size and entire site usage (may include not WP items)
 	$topitems = array (
 		'PHP Version' => $phpversion . ' '. ( PHP_INT_SIZE * 8 ) . __(' Bit OS', 'simple_space'),
 		'Memory' => 'Total: ' . $memory_limit . ' Used: ' . format_size( $memory_usage ),
 		'Database' => format_size( $dbsize ),
-		'Entire Site' => format_size( foldersize( get_home_path() ) )
+		'Entire Site' => format_size( foldersize( $homepath ) )
 	);
 
 	foreach ($topitems as $name => $value) {
-
 		echo '<p class="halfspace"><span class="spacedark">' . $name . '</span>: ' . $value . '</p>';
 	}
 
@@ -168,9 +184,7 @@ function my_simple_space() {
 	);
 
 	foreach ($folders as $name => $value) {
-
 		echo '<span class="spacedark">' . $name . '</span>: ' . format_size( foldersize( $value ) ) . '<br />';
-
 	}
 
 	echo '</div>';
